@@ -13,31 +13,20 @@ import {
   LineChart,
   Line,
 } from "recharts"
+import type { Task } from "@/types";
+import { getCompletionDate, getTaskStatusData, getDeadlineData } from "@/lib/chartUtils";
+import { useMemo } from "react";
 
-const completionData = [
-  { name: "Jan", completed: 12, total: 15 },
-  { name: "Feb", completed: 18, total: 20 },
-  { name: "Mar", completed: 14, total: 18 },
-  { name: "Apr", completed: 22, total: 25 },
-  { name: "May", completed: 16, total: 20 },
-  { name: "Jun", completed: 28, total: 30 },
-]
+interface Tasks {
+  tasks: Task[]
+}
 
-const taskStatusData = [
-  { name: "Completed", value: 45, color: "#10B981" },
-  { name: "In Progress", value: 25, color: "#2563EB" },
-  { name: "Pending", value: 20, color: "#FBBF24" },
-  { name: "Overdue", value: 10, color: "#EF4444" },
-]
+export default function ChartsSection({tasks}: Tasks) {
 
-const deadlineData = [
-  { name: "Week 1", remaining: 8 },
-  { name: "Week 2", remaining: 12 },
-  { name: "Week 3", remaining: 6 },
-  { name: "Week 4", remaining: 15 },
-]
+  const completionData = useMemo(() => getCompletionDate(tasks), [tasks])
+  const taskStatusData = useMemo(() => getTaskStatusData(tasks), [tasks])
+  const deadlineData = useMemo(() => getDeadlineData(tasks), [tasks])
 
-export default function ChartsSection() {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       {/* Completion Rate Chart */}
@@ -62,7 +51,7 @@ export default function ChartsSection() {
       {/* Task Status Distribution */}
       <Card className="rounded-2xl shadow-md">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Task Status</CardTitle>
+          <CardTitle className="text-lg font-semibold">Task Status Ratio</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={200}>
@@ -84,15 +73,17 @@ export default function ChartsSection() {
             </PieChart>
           </ResponsiveContainer>
           <div className="mt-4 space-y-2">
-            {taskStatusData.map((item) => (
+            {taskStatusData.map((item) => {
+              const percentage = tasks.length > 0 ? ((item.value / tasks.length) * 100).toFixed(1) : 0;
+              return (
               <div key={item.name} className="flex items-center justify-between text-sm">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                   <span>{item.name}</span>
                 </div>
-                <span className="font-medium">{item.value}%</span>
+                <span className="font-medium">{percentage}%</span>
               </div>
-            ))}
+            )})}
           </div>
         </CardContent>
       </Card>
@@ -100,7 +91,7 @@ export default function ChartsSection() {
       {/* Remaining Deadlines */}
       <Card className="rounded-2xl shadow-md">
         <CardHeader>
-          <CardTitle className="text-lg font-semibold">Remaining Deadlines</CardTitle>
+          <CardTitle className="text-lg font-semibold">Remaining Deadlines (In Month)</CardTitle>
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={200}>

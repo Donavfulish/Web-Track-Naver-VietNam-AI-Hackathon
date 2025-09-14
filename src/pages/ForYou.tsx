@@ -45,10 +45,10 @@ export default function ForYouPage() {
           <RecentProjects projects={projects} />
 
           {/* Coming Deadlines Section */}
-          <ComingDeadlines deadlines={tasks} />
+          <ComingDeadlines tasks={tasks} />
 
           {/* Charts Section */}
-          <ChartsSection />
+          <ChartsSection tasks={tasks}/>
         </div>
       </main>
     </div>

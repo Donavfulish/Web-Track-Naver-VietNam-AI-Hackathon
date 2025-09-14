@@ -21,8 +21,9 @@ export default function UpdateTaskModal({ task, isOpen, onClose }: UpdateTaskMod
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const today = new Date().toISOString().split("T")[0]
     try {
-      await updateTask(task.id, { ...formData, status: formData.status as TaskStatus })
+      await updateTask(task.id, { ...formData, status: formData.status as TaskStatus, completed_date: formData.status === 'Done' ? today : null })
       onClose()
     } catch (err) {
     }

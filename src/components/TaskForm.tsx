@@ -26,7 +26,11 @@ export default function TaskForm({ formData, onChange, onSubmit, submitLabel }: 
           onChange={(e) => onChange("title", e.target.value)}
           placeholder="Enter task title"
           required
+          maxLength={70}
         />
+        <p className="text-xs text-muted-foreground">
+          {formData.title?.length}/70
+        </p>
       </div>
 
       {/* Description */}
@@ -39,7 +43,11 @@ export default function TaskForm({ formData, onChange, onSubmit, submitLabel }: 
           onChange={(e) => onChange("description", e.target.value)}
           placeholder="Describe the task"
           rows={3}
+          maxLength={200}
         />
+        <p className="text-xs text-muted-foreground">
+          {formData.description?.length}/200
+        </p>
       </div>
 
       {/* Deadline */}
@@ -50,6 +58,7 @@ export default function TaskForm({ formData, onChange, onSubmit, submitLabel }: 
           className="border-gray-400 border-[1px]"
           type="date"
           value={formData.deadline || ""}
+          min={new Date().toISOString().split("T")[0]}
           onChange={(e) => onChange("deadline", e.target.value)}
           required
         />

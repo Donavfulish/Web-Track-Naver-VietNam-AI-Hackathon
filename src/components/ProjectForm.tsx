@@ -39,7 +39,11 @@ export function ProjectForm({
           onChange={(e) => onChange("name", e.target.value)}
           placeholder="Enter project name"
           required
+          maxLength={70}
         />
+        <p className="text-xs text-muted-foreground">
+          {formData.name.length}/70
+        </p>
       </div>
 
       {/* Description */}
@@ -47,13 +51,17 @@ export function ProjectForm({
         <Label htmlFor="description">Description</Label>
         <Textarea
           id="description"
-          className="border-gray-400 border-[1px]"
+          className="border-gray-400 border-[1px] resize-none break-words w-full max-w-100 overflow-y-auto"
           value={formData.description}
           onChange={(e) => onChange("description", e.target.value)}
           placeholder="Describe your project"
           rows={3}
           required
+          maxLength={200}
         />
+        <p className="text-xs text-muted-foreground">
+          {formData.description.length}/200
+        </p>
       </div>
 
       {/* Final Deadline */}
@@ -64,6 +72,7 @@ export function ProjectForm({
           className="border-gray-400 border-[1px]"
           type="date"
           value={formData.final_deadline}
+          min={new Date().toISOString().split("T")[0]}
           onChange={(e) => onChange("final_deadline", e.target.value)}
           required
         />
@@ -78,7 +87,6 @@ export function ProjectForm({
           value={formData.img_src}
           onChange={(e) => onChange("img_src", e.target.value)}
           placeholder="Enter Image URL"
-          required
         />
         {formData.img_src && (
           <div className="flex justify-center mt-2">

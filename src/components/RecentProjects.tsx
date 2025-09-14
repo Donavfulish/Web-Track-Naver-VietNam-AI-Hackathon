@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import timeAgo from "@/lib/time"
 import type { Project } from "@/types";
+import { useProjectStore } from "@/store/projectStore";
 
 
 const getStatusColor = (status: string) => {
@@ -20,7 +21,7 @@ interface RecentProjectsProps {
 }
 
 export default function RecentProjects({projects}: RecentProjectsProps) {
-
+  
   return (
     <Card className="rounded-2xl shadow-md">
       <CardHeader>

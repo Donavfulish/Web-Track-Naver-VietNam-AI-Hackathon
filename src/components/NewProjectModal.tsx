@@ -15,7 +15,7 @@ export default function NewProjectModal({ isOpen, onClose }: NewProjectModalProp
     name: "",
     description: "",
     final_deadline: "",
-    img_src: "",
+    img_src: 'https://res.cloudinary.com/djyicm00q/image/upload/v1757839076/default-featured-image.png_bqipck.jpg',
   });
 
   const handleChange = (field: string, value: string) => {
@@ -27,7 +27,7 @@ export default function NewProjectModal({ isOpen, onClose }: NewProjectModalProp
     try {
       await addProject(formData);
       toast.success("Project created successfully!");
-      setFormData({ name: "", description: "", final_deadline: "", img_src: "" });
+      setFormData({ name: "", description: "", final_deadline: "", img_src: 'https://res.cloudinary.com/djyicm00q/image/upload/v1757839076/default-featured-image.png_bqipck.jpg' });
       onClose();
     } catch (err) {
       toast.error("Failed to create project. Please try again.");

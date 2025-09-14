@@ -24,6 +24,7 @@ export interface Project {
     num_pending: number;
     num_done: number;
     num_to_do: number;
+    num_miss: number;
     progress: number;
 }
 
@@ -37,4 +38,5 @@ export interface Task {
     status: TaskStatus;
     created_at: string; // ISO timestamp
     priority: string;
+    completed_date:string | null;
 }

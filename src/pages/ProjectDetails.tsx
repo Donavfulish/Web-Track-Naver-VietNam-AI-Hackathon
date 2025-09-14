@@ -169,7 +169,7 @@ export default function ProjectDetailPage() {
             </TabsContent>
 
             <TabsContent value="analytics">
-              <TaskAnalyticsView tasks={taskByProject} />
+              <TaskAnalyticsView tasks={taskByProject} projectById={projectById}  />
             </TabsContent>
           </Tabs>
         </div>

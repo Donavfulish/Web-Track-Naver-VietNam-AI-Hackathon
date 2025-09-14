@@ -10,7 +10,7 @@ interface ProjectState {
     initializedProjects: boolean;
     errorProjects: string | null;
     fetchProjects: () => Promise<void>;
-    addProject: (newProjectData: Omit<Project, 'id' | 'user_id' | 'created_at' | 'created_local' | 'progress' | 'num_pending' | 'num_done' | 'num_to_do' | 'progress'>) => Promise<Project>;
+    addProject: (newProjectData: Omit<Project, 'id' | 'user_id' | 'created_at' | 'created_local' | 'progress' | 'num_pending' | 'num_done' | 'num_to_do' | 'num_miss' | 'progress'>) => Promise<Project>;
     updateProject: (projectId: string, updatedData: Partial<Project>) => Promise<Project>;
     deleteProject: (projectId: string) => Promise<void>;
 }
@@ -35,6 +35,7 @@ export const useProjectStore = create<ProjectState>((set) => ({
                 ...p,
                 created_local: new Date(p.created_at + "Z").toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })
             }));
+            console.log(projects);
             set({ projects: projects as Project[], loadingProjects: false });
         } catch (error: any) {
             console.error("Error fetching projects:", error);

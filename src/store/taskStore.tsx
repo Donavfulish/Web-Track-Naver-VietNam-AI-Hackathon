@@ -11,13 +11,12 @@ interface TaskState {
     initializedTasks: boolean;
     errorTasks: string | null;
     fetchTasks: () => Promise<void>;
-    fetchTasksByProjectId: (projectId: string) => Promise<void>;
     addTask: (newTaskData: Omit<Task, 'id' | 'created_at' | 'user_id'>) => Promise<Task>;
     updateTask: (taskId: string, updatedData: Partial<Task>) => Promise<Task>;
     deleteTask: (taskId: string) => Promise<void>;
 }
 
-export const useTaskStore = create<TaskState>((set) => ({
+export const useTaskStore = create<TaskState>((set, get) => ({
     tasks: [],
     loadingTasks: false,
     initializedTasks: false,
@@ -29,25 +28,7 @@ export const useTaskStore = create<TaskState>((set) => ({
             const { data, error } = await supabase
                 .from('tasks')
                 .select('*')
-                .order('created_at', { ascending: false });
-
-            if (error) throw error;
-            set({ tasks: data as Task[], loadingTasks: false });
-        } catch (error: any) {
-            console.error("Error fetching tasks:", error);
-            set({ errorTasks: error.message, loadingTasks: false });
-            throw error;
-        }
-    },
-
-    fetchTasksByProjectId: async (projectId) => {
-        set({ loadingTasks: true, errorTasks: null });
-        try {
-            const { data, error } = await supabase
-                .from('tasks')
-                .select('*')
-                .eq('project_id', projectId)
-                .order('created_at', { ascending: false });
+                .order('deadline', { ascending: true });
 
             if (error) throw error;
             set({ tasks: data as Task[], loadingTasks: false });

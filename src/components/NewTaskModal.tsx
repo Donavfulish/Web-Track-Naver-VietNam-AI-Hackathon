@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ToastContainer, toast } from "react-toastify"
 import TaskForm from "./TaskForm"
 import { useTaskStore } from "@/store/taskStore"
 import type { TaskStatus } from "@/types"
@@ -19,6 +18,7 @@ export default function NewTaskModal({ project_id, isOpen, onClose }: NewTaskMod
     description: "",
     deadline: "",
     priority: "",
+    completed_date: null,
     status: "Todo" as TaskStatus,
   })
 
@@ -28,13 +28,13 @@ export default function NewTaskModal({ project_id, isOpen, onClose }: NewTaskMod
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    const today = new Date().toISOString().split("T")[0]
 
     try {
-      await addTask({ ...formData, status: formData.status as TaskStatus })
-      setFormData({ project_id, title: "", description: "", deadline: "", priority: "", status: "Todo" })
+      await addTask({ ...formData, status: formData.status as TaskStatus, completed_date: formData.status === 'Done' ? today : null })
+      setFormData({ project_id, title: "", description: "", deadline: "", priority: "",  completed_date: null, status: "Todo" })
       onClose()
     } catch (err) {
-      throw(err)
     }
   }
 
@@ -44,10 +44,8 @@ export default function NewTaskModal({ project_id, isOpen, onClose }: NewTaskMod
         <DialogHeader>
           <DialogTitle className="text-xl font-semibold">Create New Task</DialogTitle>
         </DialogHeader>
-
         <TaskForm formData={formData} onChange={handleChange} onSubmit={handleSubmit} submitLabel="Create Task" />
       </DialogContent>
-      <ToastContainer />
     </Dialog>
   )
 }

@@ -13,33 +13,27 @@ import {
   LineChart,
   Line,
 } from "recharts"
-import type { Task } from "@/types"
-interface TaskListViewProps {
+import type { Task, Project } from "@/types"
+import { getTaskProgressData, getDeadlineData } from "@/lib/chartUtils"
+import { useMemo } from "react"
+
+interface TaskAnalyticsViewProps {
   tasks: Task[];
+  projectById?: Project; // nếu cần thì thêm project
 }
 
-// Mock analytics data
-const taskProgressData = [
-  { week: "Week 1", completed: 3, pending: 5 },
-  { week: "Week 2", completed: 6, pending: 4 },
-  { week: "Week 3", completed: 8, pending: 3 },
-  { week: "Week 4", completed: 12, pending: 2 },
-]
+export default function TaskAnalyticsView({ tasks, projectById }: TaskAnalyticsViewProps) {
+  const taskProgressData = useMemo(() => {
+    if (!projectById) return [];
+    return getTaskProgressData(tasks, projectById);
+  }, [tasks, projectById]);
 
-const taskStatusData = [
-  { name: "Completed", value: 60, color: "#10B981" },
-  { name: "In Progress", value: 25, color: "#2563EB" },
-  { name: "Pending", value: 15, color: "#FBBF24" },
-]
-
-const overdueData = [
-  { week: "Week 1", overdue: 0 },
-  { week: "Week 2", overdue: 1 },
-  { week: "Week 3", overdue: 0 },
-  { week: "Week 4", overdue: 2 },
-]
-
-export default function TaskAnalyticsView({ tasks }: TaskListViewProps) {
+  const taskStatusData = [
+    { name: "Completed", value: projectById?.num_done, color: "#10B981" },
+    { name: "In Progress", value: (projectById?.num_pending ?? 0) + (projectById?.num_to_do ?? 0), color: "#2563EB" },
+    { name: "Miss", value: projectById?.num_miss, color: "#FE2020" },
+  ]
+  const taskRemainingData = useMemo(() => getDeadlineData(tasks), [tasks])
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
       {/* Task Progress Chart */}
@@ -55,7 +49,7 @@ export default function TaskAnalyticsView({ tasks }: TaskListViewProps) {
               <YAxis />
               <Tooltip />
               <Bar dataKey="completed" fill="#2563EB" name="Completed" />
-              <Bar dataKey="pending" fill="#FBBF24" name="Pending" />
+              <Bar dataKey="miss" fill="#FE2020" name="Miss" />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
@@ -86,15 +80,17 @@ export default function TaskAnalyticsView({ tasks }: TaskListViewProps) {
             </PieChart>
           </ResponsiveContainer>
           <div className="mt-4 space-y-2">
-            {taskStatusData.map((item) => (
+            {taskStatusData.map((item) => {
+              const percentage = tasks.length > 0 ? (((item?.value?? 0) / tasks.length) * 100).toFixed(1) : 0;
+              return (
               <div key={item.name} className="flex items-center justify-between text-sm">
                 <div className="flex items-center space-x-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
                   <span>{item.name}</span>
                 </div>
-                <span className="font-medium">{item.value}%</span>
+                <span className="font-medium">{percentage}%</span>
               </div>
-            ))}
+            )})}
           </div>
         </CardContent>
       </Card>
@@ -106,14 +102,14 @@ export default function TaskAnalyticsView({ tasks }: TaskListViewProps) {
         </CardHeader>
         <CardContent>
           <ResponsiveContainer width="100%" height={250}>
-            <LineChart data={overdueData}>
+            <LineChart data={taskRemainingData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="week" />
+              <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
               <Line
                 type="monotone"
-                dataKey="overdue"
+                dataKey="remaining"
                 stroke="#EF4444"
                 strokeWidth={3}
                 dot={{ fill: "#EF4444", strokeWidth: 2, r: 4 }}
