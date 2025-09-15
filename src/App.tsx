@@ -5,7 +5,6 @@ import ForYouPage from "./pages/ForYou";
 import CallbackPage from "./pages/CallbackPage";
 import ProjectsPage from "./pages/Projects";
 import ProjectDetailPage from "./pages/ProjectDetails";
-import TestProject from "./components/TestProject";
 
 export default function App() {
   return (
@@ -16,7 +15,6 @@ export default function App() {
       <Route path="/callback" element={<CallbackPage />} />
       <Route path="/projects" element={<ProjectsPage />} />
       <Route path="/projects/:id" element={<ProjectDetailPage />} />
-      <Route path="/test" element={<TestProject />} />
     </Routes>
   );
 }
