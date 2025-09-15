@@ -39,57 +39,59 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
             // ✨ LẤY USER MỚI NHẤT TRỰC TIẾP TỪ STORE
             // Điều này tránh việc phải thêm 'user' vào dependency array
-            const currentUser = useUserStore.getState().user; 
+            const currentUser = useUserStore.getState().user;
             // Chỉ upsert nếu user chưa có hoặc user thay đổi
             if (!currentUser || currentUser.id !== session.user.id) {
               const { error } = await supabase
                 .from("profiles")
                 .upsert(
                   {
+                    id: session.user.id, // UUID từ auth.users
                     name: session.user.user_metadata.full_name,
-                    email: session.user.email
+                    email: session.user.email,
                   },
-                  { onConflict: "email" }
+                  { onConflict: "id" } // hoặc "email", nhưng id chuẩn hơn
                 );
-              if (error) console.error("Error upserting profile:", error);
-            }
 
-            if (toastIdRef.current) {
-              toast.dismiss(toastIdRef.current);
-              toastIdRef.current = null;
-            }
+              if (error) {
+                console.error("Error upserting profile:", error);
+              }
+              if (toastIdRef.current) {
+                toast.dismiss(toastIdRef.current);
+                toastIdRef.current = null;
+              }
 
-            // Xử lý điều hướng
-            if (event === "SIGNED_IN" && window.location.pathname === '/') {
-              navigate('/for-you', { replace: true });
-            } else if (event === "INITIAL_SESSION") {
-              if (window.location.pathname === '/') {
+              // Xử lý điều hướng
+              if (event === "SIGNED_IN" && window.location.pathname === '/') {
                 navigate('/for-you', { replace: true });
+              } else if (event === "INITIAL_SESSION") {
+                if (window.location.pathname === '/') {
+                  navigate('/for-you', { replace: true });
+                }
               }
-            }
-          } else { // session là null
-            localStorage.removeItem('loginTime');
-            setUser(null);
+            } else { // session là null
+              localStorage.removeItem('loginTime');
+              setUser(null);
 
-            const isProtectedPath = window.location.pathname !== '/';
-            if (isProtectedPath || event === "SIGNED_OUT") {
-              navigate('/', { replace: true });
+              const isProtectedPath = window.location.pathname !== '/';
+              if (isProtectedPath || event === "SIGNED_OUT") {
+                navigate('/', { replace: true });
 
-              const message = event === "SIGNED_OUT" 
-                ? "Phiên đăng nhập của bạn đã kết thúc." 
-                : "Bạn cần đăng nhập để truy cập trang này.";
+                const message = event === "SIGNED_OUT"
+                  ? "Phiên đăng nhập của bạn đã kết thúc."
+                  : "Bạn cần đăng nhập để truy cập trang này.";
 
-              if (!toast.isActive(toastIdRef.current as Id)) {
+                if (!toast.isActive(toastIdRef.current as Id)) {
                   toastIdRef.current = toast.error(message);
+                }
               }
             }
+          } catch (error) {
+            console.error("Error in onAuthStateChange:", error);
+            // Xử lý lỗi chung
+            await supabase.auth.signOut();
           }
-        } catch (error) {
-          console.error("Error in onAuthStateChange:", error);
-          // Xử lý lỗi chung
-          await supabase.auth.signOut();
         }
-      }
     );
 
     const intervalId = window.setInterval(handleAutoLogoutCheck, AUTO_LOGOUT_CHECK_INTERVAL_MS);
