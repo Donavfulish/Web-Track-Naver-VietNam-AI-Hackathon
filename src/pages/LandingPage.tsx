@@ -44,7 +44,7 @@ export default function LandingPage() {
             <br /> Study Better
           </h1>
           <p className="text-lg md:text-xl text-gray-200 mb-8 max-w-xl">
-            Wevent helps students organize tasks, track projects, and never miss a deadline again.
+            WePlan helps students organize tasks, track projects, and never miss a deadline again.
           </p>
 
           <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
@@ -60,7 +60,7 @@ export default function LandingPage() {
             <DialogContent className="sm:max-w-md">
               <DialogHeader>
                 <DialogTitle className="text-2xl font-bold text-center text-foreground">
-                  Welcome to Wevent
+                  Welcome to WePlan
                 </DialogTitle>
               </DialogHeader>
               <div className="flex flex-col items-center space-y-4 py-4">
@@ -148,7 +148,7 @@ export default function LandingPage() {
                 Built for Student Success
               </h2>
               <p className="text-xl text-muted-foreground mb-8 leading-relaxed">
-                Wevent understands the unique challenges students face. Our platform is designed to reduce stress and
+                WePlan understands the unique challenges students face. Our platform is designed to reduce stress and
                 increase productivity.
               </p>
 
@@ -197,7 +197,7 @@ export default function LandingPage() {
             Ready to Transform Your Academic Life?
           </h2>
           <p className="text-xl text-primary-foreground/90 mb-8 max-w-2xl mx-auto text-pretty">
-            Join thousands of students who have already improved their productivity with Wevent
+            Join thousands of students who have already improved their productivity with WePlan
           </p>
           <Dialog open={isLoginOpen} onOpenChange={setIsLoginOpen}>
             <DialogTrigger asChild>
@@ -217,11 +217,11 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="py-12 px-4 bg-muted/50 border-t border-border">
         <div className="max-w-6xl mx-auto text-center">
-          <h3 className="text-2xl font-bold text-foreground mb-4">Wevent</h3>
+          <h3 className="text-2xl font-bold text-foreground mb-4">WePlan</h3>
           <p className="text-muted-foreground mb-6">
             Empowering students to achieve their academic goals through smart organization
           </p>
-          <div className="text-sm text-muted-foreground">© 2025 Wevent. Built for student success.</div>
+          <div className="text-sm text-muted-foreground">© 2025 WePlan. Built for student success.</div>
         </div>
       </footer>
     </div>
