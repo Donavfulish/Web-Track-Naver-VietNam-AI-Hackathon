@@ -1,7 +1,6 @@
 // src/types/index.ts
 
-export type ProjectStatus = 'Active' | 'Completed' | 'Miss'; // Ví dụ thêm status cho project
-export type TaskTopic = 'Study' | 'Teamwork' | 'Learning' | 'Work' | 'Other' | 'AI_Generated'; // Thêm AI_Generated
+export type ProjectStatus = 'Active' | 'Completed' | 'Miss'; 
 export type TaskStatus = 'Todo' | 'Pending' | 'Done' | 'Miss';
 
 export interface UserProfile {

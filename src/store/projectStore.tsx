@@ -35,7 +35,6 @@ export const useProjectStore = create<ProjectState>((set) => ({
                 ...p,
                 created_local: new Date(p.created_at + "Z").toLocaleString("vi-VN", { timeZone: "Asia/Ho_Chi_Minh" })
             }));
-            console.log(projects);
             set({ projects: projects as Project[], loadingProjects: false });
         } catch (error: any) {
             console.error("Error fetching projects:", error);
@@ -50,7 +49,6 @@ export const useProjectStore = create<ProjectState>((set) => ({
                 .from('projects')
                 .insert(newProjectData)
                 .select();
-
             if (error) throw error;
             const addedProject = {
                 ...data[0],

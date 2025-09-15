@@ -7,12 +7,11 @@ export default function CallbackPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Supabase sẽ tự động xử lý session từ URL fragment
-    // Sau đó, chúng ta sẽ kiểm tra session và chuyển hướng
+    // Supabase tự động xử lý session từ URL fragment
     supabase.auth.getSession().then(({ data: { session } }: { data: { session: Session | null } }) => {
       if (session) {
-        // Sau khi đăng nhập thành công, chuyển hướng đến Dashboard
-        navigate('/dashboard', { replace: true });
+        // Sau khi đăng nhập thành công, chuyển hướng đến for-you
+        navigate('/for-you', { replace: true });
       } else {
         // Nếu không có session (có thể có lỗi hoặc người dùng hủy), về trang chủ
         navigate('/', { replace: true });

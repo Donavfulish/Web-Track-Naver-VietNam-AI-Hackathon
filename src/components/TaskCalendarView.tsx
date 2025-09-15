@@ -1,62 +1,106 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState } from "react"
+import {
+  eachDayOfInterval,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  format,
+  addMonths,
+  subMonths,
+  isSameMonth,
+  isToday,
+  parseISO,
+  isSameDay,
+} from "date-fns"
 import type { Task } from "@/types"
-interface TaskListViewProps {
-  tasks: Task[];
+
+const statusColors: Record<string, string> = {
+  Todo: "bg-blue-300 text-green-900",
+  Done: "bg-green-300 text-green-900",
+  Pending: "bg-yellow-300 text-yellow-900",
+  Miss: "bg-red-300 text-red-900",
 }
 
-// Mock calendar data
-const calendarTasks = [
-  { date: "2024-12-18", tasks: [{ title: "Content migration", status: "Done" }] },
-  { date: "2024-12-20", tasks: [{ title: "Design homepage mockup", status: "In Progress" }] },
-  { date: "2024-12-22", tasks: [{ title: "Implement responsive navigation", status: "Pending" }] },
-  { date: "2024-12-25", tasks: [{ title: "Set up analytics tracking", status: "Pending" }] },
-]
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "Done":
-      return "bg-green-100 text-green-800"
-    case "In Progress":
-      return "bg-blue-100 text-blue-800"
-    case "Pending":
-      return "bg-yellow-100 text-yellow-800"
-    default:
-      return "bg-gray-100 text-gray-800"
-  }
+interface TaskCalendarViewProps {
+  tasks: Task[]
 }
 
-export default function TaskCalendarView({ tasks }: TaskListViewProps) {
+export default function TaskCalendarView({ tasks }: TaskCalendarViewProps) {
+  const [currentDate, setCurrentDate] = useState(new Date())
+  const days = eachDayOfInterval({
+    start: startOfWeek(startOfMonth(currentDate)),
+    end: endOfWeek(endOfMonth(currentDate)),
+  })
+
+  const handlePrevMonth = () => setCurrentDate(subMonths(currentDate, 1))
+  const handleNextMonth = () => setCurrentDate(addMonths(currentDate, 1))
+
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+
   return (
-    <Card className="rounded-2xl shadow-md">
-      <CardHeader>
-        <CardTitle className="text-xl font-semibold">Task Calendar</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {calendarTasks.map((day) => (
-            <div key={day.date} className="p-4 bg-card rounded-xl border border-border">
-              <h3 className="font-semibold text-foreground mb-3">
-                {new Date(day.date).toLocaleDateString("en-US", {
-                  weekday: "short",
-                  month: "short",
-                  day: "numeric",
-                })}
-              </h3>
-              <div className="space-y-2">
-                {day.tasks.map((task, index) => (
-                  <div key={index} className="flex items-center justify-between">
-                    <span className="text-sm text-foreground">{task.title}</span>
-                    <Badge className={getStatusColor(task.status)}>
-                      {task.status}
-                    </Badge>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <button
+          onClick={handlePrevMonth}
+          className="px-4 py-2 text-lg rounded bg-gray-200 hover:bg-gray-300"
+        >
+          ← Prev
+        </button>
+        <h2 className="font-semibold text-xl">{format(currentDate, "MMMM yyyy")}</h2>
+        <button
+          onClick={handleNextMonth}
+          className="px-4 py-2 text-lg rounded bg-gray-200 hover:bg-gray-300"
+        >
+          Next →
+        </button>
+      </div>
+
+      {/* Weekdays row */}
+      <div className="grid grid-cols-7 text-center font-medium text-sm">
+        {weekdays.map((d) => (
+          <div key={d}>{d}</div>
+        ))}
+      </div>
+
+      {/* Days grid */}
+      <div className="grid grid-cols-7 gap-1">
+        {days.map((day, idx) => {
+          const dayTasks = tasks.filter((t) => {
+            if (!t.deadline) return false
+            try {
+              const taskDate = parseISO(t.deadline)
+              return isSameDay(taskDate, day)
+            } catch {
+              return false
+            }
+          })
+
+          return (
+            <div
+              key={idx}
+              className={`border rounded p-1 min-h-[100px] flex flex-col ${
+                !isSameMonth(day, currentDate) ? "bg-gray-50 text-gray-400" : ""
+              } ${isToday(day) ? "border-blue-500" : ""}`}
+            >
+              <div className="text-xs font-semibold">{format(day, "d")}</div>
+              <div className="space-y-1 mt-1">
+                {dayTasks.map((t) => (
+                  <div
+                    key={t.id}
+                    className={`text-xs truncate rounded px-1 py-0.5 cursor-pointer hover:opacity-80 ${
+                      statusColors[t.status] || "bg-gray-100"
+                    }`}
+                  >
+                    {t.title}
                   </div>
                 ))}
               </div>
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+          )
+        })}
+      </div>
+    </div>
   )
 }

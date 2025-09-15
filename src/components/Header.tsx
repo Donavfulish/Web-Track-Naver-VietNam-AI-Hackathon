@@ -4,24 +4,42 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { User, Settings, LogOut } from "lucide-react"
+import { supabase } from "@/lib/supabase"
+import { LogOut } from "lucide-react"
+import { useNavigate } from "react-router-dom"
+import { useUserStore } from "@/store/useStore"
 
 export default function Header() {
+  const navigate = useNavigate()
+  const { setUser } = useUserStore()
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      console.error("Logout error:", error.message);
+      alert("Failed to logout: " + error.message);
+      return;
+    }
+
+    localStorage.removeItem('loginTime');
+    setUser(null);
+
+    navigate("/");
+  }
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-border shadow-sm">
+     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-border shadow-sm">
       <div className="flex items-center justify-between px-6 py-4">
         {/* Logo */}
         <div className="flex items-center space-x-2">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-            <span className="text-primary-foreground font-bold text-sm">D</span>
+            <span className="text-primary-foreground font-bold text-sm">We</span>
           </div>
-          <span className="font-semibold text-lg text-foreground">Dashboard</span>
+          <span className="font-semibold text-lg text-foreground">Wevent</span>
         </div>
 
-        {/* Profile Dropdown */}
+        {/* Logout Dropdown */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full">
@@ -32,16 +50,7 @@ export default function Header() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" align="end" forceMount>
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Settings className="mr-2 h-4 w-4" />
-              <span>Settings</span>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
               <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>

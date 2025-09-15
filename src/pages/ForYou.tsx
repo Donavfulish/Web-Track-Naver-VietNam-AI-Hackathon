@@ -10,6 +10,7 @@ import { useEffect } from "react"
 export default function ForYouPage() {
   const { projects, fetchProjects, loadingProjects, initializedProjects } = useProjectStore();
   const { tasks, fetchTasks, loadingTasks, initializedTasks } = useTaskStore();
+
   useEffect(() => {
     if (!initializedProjects) {
       fetchProjects();
@@ -25,6 +26,7 @@ export default function ForYouPage() {
   if (loadingProjects || loadingTasks) {
     return <div>⏳ Đang tải dữ liệu...</div>;
   }
+  
   return (
     <div className="min-h-screen bg-background">
       <Header />

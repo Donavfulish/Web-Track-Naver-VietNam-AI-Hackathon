@@ -2,8 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import timeAgo from "@/lib/time"
 import type { Project } from "@/types";
-import { useProjectStore } from "@/store/projectStore";
-
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -28,6 +26,11 @@ export default function RecentProjects({projects}: RecentProjectsProps) {
         <CardTitle className="text-xl font-semibold">Recent Projects</CardTitle>
       </CardHeader>
       <CardContent>
+        {projects.length === 0 ? (
+          <p className="text-muted-foreground text-left py-3">
+            No projects yet
+          </p>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {projects.map((project) => (
             <div
@@ -58,6 +61,7 @@ export default function RecentProjects({projects}: RecentProjectsProps) {
             </div>
           ))}
         </div>
+        )}
       </CardContent>
     </Card>
   )

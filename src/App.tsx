@@ -1,21 +1,22 @@
-import hackathonGraphic from './assets/hackathon-graphic.svg'
-import naverLogo from './assets/naver-logo.svg'
+// src/App.tsx
+import { Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
+import ForYouPage from "./pages/ForYou";
+import CallbackPage from "./pages/CallbackPage";
+import ProjectsPage from "./pages/Projects";
+import ProjectDetailPage from "./pages/ProjectDetails";
+import TestProject from "./components/TestProject";
 
-function App() {
+export default function App() {
   return (
-    <div className="container">
-      <div className="content">
-        <img src={naverLogo} alt="NAVER Vietnam AI Hackathon" className="logo" />
-        
-        <div className="greeting">
-          <p className="hello">Xin chào! 안녕하세요!</p>
-          <p className="subtitle">Hello World</p>
-        </div>
-      </div>
-      
-      <img className="graphic" src={hackathonGraphic} alt="" />
-    </div>
-  )
-}
 
-export default App
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/for-you" element={<ForYouPage />} />
+      <Route path="/callback" element={<CallbackPage />} />
+      <Route path="/projects" element={<ProjectsPage />} />
+      <Route path="/projects/:id" element={<ProjectDetailPage />} />
+      <Route path="/test" element={<TestProject />} />
+    </Routes>
+  );
+}
