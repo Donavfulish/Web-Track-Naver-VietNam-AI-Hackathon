@@ -40,18 +40,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             // ✨ LẤY USER MỚI NHẤT TRỰC TIẾP TỪ STORE
             // Điều này tránh việc phải thêm 'user' vào dependency array
             const currentUser = useUserStore.getState().user; 
-            
             // Chỉ upsert nếu user chưa có hoặc user thay đổi
             if (!currentUser || currentUser.id !== session.user.id) {
               const { error } = await supabase
                 .from("profiles")
                 .upsert(
                   {
-                    id: session.user.id,
                     name: session.user.user_metadata.full_name,
                     email: session.user.email
                   },
-                  { onConflict: "id" }
+                  { onConflict: "email" }
                 );
               if (error) console.error("Error upserting profile:", error);
             }
